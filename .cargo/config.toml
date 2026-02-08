@@ -1,0 +1,3 @@
+[build]
+target-dir = "target/" 
+rustflags = ["-l", "psapi", "-l", "advapi32", "-l", "shell32", "-l", "ole32", "-l", "uuid", "-l", "ws2_32", "-l", "ntdll"]

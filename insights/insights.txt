@@ -1,0 +1,19 @@
+// benchmark-*.ll (iterative fibonacci)
+
+=== RESULTS ===
+-O0: 1.00x speedup
+-O2: 3.27x speedup
+-O3: 2.97x speedup
+
+== VERDICT ==
+-02 had a 2.40% speedup over -O3
+
+// benchmark2-*.ll (recursive fibonacci)
+
+=== RESULTS ===
+-O0: 1.00x speedup
+-O2: 1.28x speedup
+-O3: 1.47x speedup
+
+== VERDICT ==
+-O3 did better than -O2
