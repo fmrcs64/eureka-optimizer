@@ -51,3 +51,6 @@ results/
 # OS
 .DS_Store
 Thumbs.db
+
+# Unecessary folders (for now)
+insights/
