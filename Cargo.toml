@@ -7,20 +7,26 @@ description = "A short description"
 license = "MIT"
 repository = "https://github.com/fmrcs64/eureka-optimizer"
 readme = "README.md"
+exclude = ["src/rust/main_old.rs"]
 
 [package.metadata]
 cargo = { root = "src/rust" }
 
 [dependencies]
-llvm-sys = "181.1.0"
 inkwell = { version = "0.8.0", default-features = false, features = ["llvm18-1"] }
 serde = {version = "1.0", features = ["derive"]}
 serde_json = "1.0"
-clap = { version = "4.0", features = ["derive"] }  
+clap = { version = "4.0", features = ["derive"] } 
+either = "1.0"
 anyhow = "1.0.100"
+
+[build-dependencies]
+cc = "1.2.56"
+
 [[bin]]
 name = "main"
 path = "src/rust/main.rs"
+
 
 [profile.release]
 opt-level = 3
