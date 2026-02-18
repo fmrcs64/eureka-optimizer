@@ -1,7 +1,7 @@
 ; ModuleID = 'examples/recursive_fibonacci.c'
 source_filename = "examples/recursive_fibonacci.c"
 target datalayout = "e-m:w-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128"
-target triple = "x86_64-pc-windows-msvc19.50.35723"
+target triple = "x86_64-pc-windows-msvc19.44.35222"
 
 $printf = comdat any
 
@@ -24,7 +24,7 @@ define dso_local i32 @fibonacci(i32 noundef %0) local_unnamed_addr #0 {
   %7 = tail call i32 @fibonacci(i32 noundef %6)
   %8 = add nsw i32 %4, -2
   %9 = add nsw i32 %7, %5
-  %10 = icmp samesign ult i32 %4, 4
+  %10 = icmp ult i32 %4, 4
   br i1 %10, label %11, label %3
 
 11:                                               ; preds = %3, %1
@@ -110,31 +110,31 @@ define dso_local noundef i32 @main() local_unnamed_addr #1 {
 }
 
 ; Function Attrs: mustprogress nocallback nofree nosync nounwind willreturn memory(argmem: readwrite)
-declare void @llvm.lifetime.start.p0(i64 immarg, ptr captures(none)) #2
+declare void @llvm.lifetime.start.p0(i64 immarg, ptr nocapture) #2
 
 ; Function Attrs: mustprogress nocallback nofree nosync nounwind willreturn memory(argmem: readwrite)
-declare void @llvm.lifetime.end.p0(i64 immarg, ptr captures(none)) #2
+declare void @llvm.lifetime.end.p0(i64 immarg, ptr nocapture) #2
 
 ; Function Attrs: inlinehint nounwind uwtable
 define linkonce_odr dso_local i32 @printf(ptr noundef %0, ...) local_unnamed_addr #3 comdat {
   %2 = alloca ptr, align 8
   call void @llvm.lifetime.start.p0(i64 8, ptr nonnull %2) #7
-  call void @llvm.va_start.p0(ptr nonnull %2)
-  %3 = load ptr, ptr %2, align 8
+  call void @llvm.va_start(ptr nonnull %2)
+  %3 = load ptr, ptr %2, align 8, !tbaa !5
   %4 = call ptr @__acrt_iob_func(i32 noundef 1) #7
   %5 = call ptr @__local_stdio_printf_options()
-  %6 = load i64, ptr %5, align 8
+  %6 = load i64, ptr %5, align 8, !tbaa !9
   %7 = call i32 @__stdio_common_vfprintf(i64 noundef %6, ptr noundef %4, ptr noundef %0, ptr noundef null, ptr noundef %3) #7
-  call void @llvm.va_end.p0(ptr nonnull %2)
+  call void @llvm.va_end(ptr nonnull %2)
   call void @llvm.lifetime.end.p0(i64 8, ptr nonnull %2) #7
   ret i32 %7
 }
 
 ; Function Attrs: mustprogress nocallback nofree nosync nounwind willreturn
-declare void @llvm.va_start.p0(ptr) #4
+declare void @llvm.va_start(ptr) #4
 
 ; Function Attrs: mustprogress nocallback nofree nosync nounwind willreturn
-declare void @llvm.va_end.p0(ptr) #4
+declare void @llvm.va_end(ptr) #4
 
 ; Function Attrs: noinline nounwind uwtable
 define linkonce_odr dso_local ptr @__local_stdio_printf_options() local_unnamed_addr #5 comdat {
@@ -154,15 +154,17 @@ attributes #5 = { noinline nounwind uwtable "min-legal-vector-width"="0" "no-tra
 attributes #6 = { "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #7 = { nounwind }
 
-!llvm.dbg.cu = !{!0}
-!llvm.module.flags = !{!2, !3, !4, !5, !6}
-!llvm.ident = !{!7}
+!llvm.module.flags = !{!0, !1, !2, !3}
+!llvm.ident = !{!4}
 
-!0 = distinct !DICompileUnit(language: DW_LANG_C11, file: !1, producer: "clang version 21.1.0", isOptimized: true, runtimeVersion: 0, emissionKind: NoDebug, splitDebugInlining: false, nameTableKind: None)
-!1 = !DIFile(filename: "examples\\recursive_fibonacci.c", directory: "C:\\Users\\user\\eureka-optimizer")
-!2 = !{i32 2, !"Debug Info Version", i32 3}
-!3 = !{i32 1, !"wchar_size", i32 2}
-!4 = !{i32 8, !"PIC Level", i32 2}
-!5 = !{i32 7, !"uwtable", i32 2}
-!6 = !{i32 1, !"MaxTLSAlign", i32 65536}
-!7 = !{!"clang version 21.1.0"}
+!0 = !{i32 1, !"wchar_size", i32 2}
+!1 = !{i32 8, !"PIC Level", i32 2}
+!2 = !{i32 7, !"uwtable", i32 2}
+!3 = !{i32 1, !"MaxTLSAlign", i32 65536}
+!4 = !{!"clang version 18.1.1 (https://github.com/llvm/llvm-project.git dba2a75e9c7ef81fe84774ba5eee5e67e01d801a)"}
+!5 = !{!6, !6, i64 0}
+!6 = !{!"any pointer", !7, i64 0}
+!7 = !{!"omnipotent char", !8, i64 0}
+!8 = !{!"Simple C/C++ TBAA"}
+!9 = !{!10, !10, i64 0}
+!10 = !{!"long long", !7, i64 0}

@@ -1,7 +1,7 @@
 ; ModuleID = 'examples/iterative_fibonacci.c'
 source_filename = "examples/iterative_fibonacci.c"
 target datalayout = "e-m:w-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128"
-target triple = "x86_64-pc-windows-msvc19.50.35723"
+target triple = "x86_64-pc-windows-msvc19.44.35222"
 
 $sprintf = comdat any
 
@@ -34,13 +34,13 @@ define linkonce_odr dso_local i32 @sprintf(ptr noundef %0, ptr noundef %1, ...) 
   %6 = alloca ptr, align 8
   store ptr %1, ptr %3, align 8
   store ptr %0, ptr %4, align 8
-  call void @llvm.va_start.p0(ptr %6)
+  call void @llvm.va_start(ptr %6)
   %7 = load ptr, ptr %6, align 8
   %8 = load ptr, ptr %3, align 8
   %9 = load ptr, ptr %4, align 8
   %10 = call i32 @_vsprintf_l(ptr noundef %9, ptr noundef %8, ptr noundef null, ptr noundef %7)
   store i32 %10, ptr %5, align 4
-  call void @llvm.va_end.p0(ptr %6)
+  call void @llvm.va_end(ptr %6)
   %11 = load i32, ptr %5, align 4
   ret i32 %11
 }
@@ -70,14 +70,14 @@ define linkonce_odr dso_local i32 @_snprintf(ptr noundef %0, i64 noundef %1, ptr
   store ptr %2, ptr %4, align 8
   store i64 %1, ptr %5, align 8
   store ptr %0, ptr %6, align 8
-  call void @llvm.va_start.p0(ptr %8)
+  call void @llvm.va_start(ptr %8)
   %9 = load ptr, ptr %8, align 8
   %10 = load ptr, ptr %4, align 8
   %11 = load i64, ptr %5, align 8
   %12 = load ptr, ptr %6, align 8
   %13 = call i32 @_vsnprintf(ptr noundef %12, i64 noundef %11, ptr noundef %10, ptr noundef %9)
   store i32 %13, ptr %7, align 4
-  call void @llvm.va_end.p0(ptr %8)
+  call void @llvm.va_end(ptr %8)
   %14 = load i32, ptr %7, align 4
   ret i32 %14
 }
@@ -145,7 +145,7 @@ define dso_local i32 @fibonacci(i32 noundef %0) #0 {
   %24 = load i32, ptr %7, align 4
   %25 = add nsw i32 %24, 1
   store i32 %25, ptr %7, align 4
-  br label %13, !llvm.loop !8
+  br label %13, !llvm.loop !5
 
 26:                                               ; preds = %13
   %27 = load i32, ptr %5, align 4
@@ -185,7 +185,7 @@ define dso_local i32 @main() #0 {
   %14 = load i32, ptr %3, align 4
   %15 = add nsw i32 %14, 1
   store i32 %15, ptr %3, align 4
-  br label %4, !llvm.loop !10
+  br label %4, !llvm.loop !7
 
 16:                                               ; preds = %4
   %17 = load i32, ptr %2, align 4
@@ -199,19 +199,19 @@ define linkonce_odr dso_local i32 @printf(ptr noundef %0, ...) #0 comdat {
   %3 = alloca i32, align 4
   %4 = alloca ptr, align 8
   store ptr %0, ptr %2, align 8
-  call void @llvm.va_start.p0(ptr %4)
+  call void @llvm.va_start(ptr %4)
   %5 = load ptr, ptr %4, align 8
   %6 = load ptr, ptr %2, align 8
   %7 = call ptr @__acrt_iob_func(i32 noundef 1)
   %8 = call i32 @_vfprintf_l(ptr noundef %7, ptr noundef %6, ptr noundef null, ptr noundef %5)
   store i32 %8, ptr %3, align 4
-  call void @llvm.va_end.p0(ptr %4)
+  call void @llvm.va_end(ptr %4)
   %9 = load i32, ptr %3, align 4
   ret i32 %9
 }
 
 ; Function Attrs: nocallback nofree nosync nounwind willreturn
-declare void @llvm.va_start.p0(ptr) #1
+declare void @llvm.va_start(ptr) #1
 
 ; Function Attrs: noinline nounwind optnone uwtable
 define linkonce_odr dso_local i32 @_vsprintf_l(ptr noundef %0, ptr noundef %1, ptr noundef %2, ptr noundef %3) #0 comdat {
@@ -232,7 +232,7 @@ define linkonce_odr dso_local i32 @_vsprintf_l(ptr noundef %0, ptr noundef %1, p
 }
 
 ; Function Attrs: nocallback nofree nosync nounwind willreturn
-declare void @llvm.va_end.p0(ptr) #1
+declare void @llvm.va_end(ptr) #1
 
 ; Function Attrs: noinline nounwind optnone uwtable
 define linkonce_odr dso_local i32 @_vsnprintf_l(ptr noundef %0, i64 noundef %1, ptr noundef %2, ptr noundef %3, ptr noundef %4) #0 comdat {
@@ -308,18 +308,14 @@ attributes #0 = { noinline nounwind optnone uwtable "min-legal-vector-width"="0"
 attributes #1 = { nocallback nofree nosync nounwind willreturn }
 attributes #2 = { "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 
-!llvm.dbg.cu = !{!0}
-!llvm.module.flags = !{!2, !3, !4, !5, !6}
-!llvm.ident = !{!7}
+!llvm.module.flags = !{!0, !1, !2, !3}
+!llvm.ident = !{!4}
 
-!0 = distinct !DICompileUnit(language: DW_LANG_C11, file: !1, producer: "clang version 21.1.0", isOptimized: false, runtimeVersion: 0, emissionKind: NoDebug, splitDebugInlining: false, nameTableKind: None)
-!1 = !DIFile(filename: "examples\\iterative_fibonacci.c", directory: "C:\\Users\\user\\eureka-optimizer")
-!2 = !{i32 2, !"Debug Info Version", i32 3}
-!3 = !{i32 1, !"wchar_size", i32 2}
-!4 = !{i32 8, !"PIC Level", i32 2}
-!5 = !{i32 7, !"uwtable", i32 2}
-!6 = !{i32 1, !"MaxTLSAlign", i32 65536}
-!7 = !{!"clang version 21.1.0"}
-!8 = distinct !{!8, !9}
-!9 = !{!"llvm.loop.mustprogress"}
-!10 = distinct !{!10, !9}
+!0 = !{i32 1, !"wchar_size", i32 2}
+!1 = !{i32 8, !"PIC Level", i32 2}
+!2 = !{i32 7, !"uwtable", i32 2}
+!3 = !{i32 1, !"MaxTLSAlign", i32 65536}
+!4 = !{!"clang version 18.1.1 (https://github.com/llvm/llvm-project.git dba2a75e9c7ef81fe84774ba5eee5e67e01d801a)"}
+!5 = distinct !{!5, !6}
+!6 = !{!"llvm.loop.mustprogress"}
+!7 = distinct !{!7, !6}

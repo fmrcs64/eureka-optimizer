@@ -9,7 +9,6 @@
 #include <iostream>
 #include <memory>
 
-using namespace std;
 using namespace llvm;
 
 static TargetMachine* create_target_machine() {
@@ -17,18 +16,18 @@ static TargetMachine* create_target_machine() {
     InitializeNativeTargetAsmPrinter();
     InitializeNativeTargetAsmParser();
 
-    string target_triple = sys::getDefaultTargetTriple();
-    string error;
+    std::string target_triple = sys::getDefaultTargetTriple();
+    std::string error;
 
     const Target* target = TargetRegistry::lookupTarget(target_triple, error);
     if (!target) {
-        cerr << "Error looking up target: " << error << endl;
+        std::cerr << "Error looking up target: " << error << std::endl;
         return nullptr;
     }
 
     TargetMachine* TM = target->createTargetMachine(
         target_triple,
-        "generic",
+        sys::getHostCPUName().str(),
         "",
         TargetOptions(),
         std::nullopt,
@@ -38,7 +37,7 @@ static TargetMachine* create_target_machine() {
     );
 
     if (!TM) {
-        cerr << "Error creating TargetMachine" << endl;
+        std::cerr << "Error creating TargetMachine" << std::endl;
         return nullptr;
     }
 
@@ -46,21 +45,27 @@ static TargetMachine* create_target_machine() {
 }
 
 extern "C" {
-    unsigned get_instruction_cost(LLVMValueRef inst_ref) {
-        static unique_ptr<TargetMachine> TM(create_target_machine());
-        if (!TM) return 0;
+    int get_instruction_cost(LLVMValueRef inst_ref) {
+        static std::unique_ptr<TargetMachine> TM(create_target_machine());
+        if (!TM) return -1;
 
         Instruction* I = unwrap<Instruction>(inst_ref);
-        if (!I) return 0;
+        if (!I) return -1;
 
         Function* F = I->getFunction();
-        if (!F) return 0;
+        if (!F) return -1;
 
         TargetTransformInfo TTI = TM->getTargetTransformInfo(*F);
-        auto cost = TTI.getInstructionCost(I, TargetTransformInfo::TCK_Latency);
+
+        auto cost = TTI.getInstructionCost(
+            I,
+            TargetTransformInfo::TCK_RecipThroughput
+        );
+
         if (cost.isValid()) {
-            return *cost.getValue();
+            return static_cast<int>(*cost.getValue());
         }
-        return 0;
+
+        return -1;
     }
 }

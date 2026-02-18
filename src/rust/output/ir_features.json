@@ -1,9 +1,0 @@
-{
-  "num_functions": 16,
-  "num_instructions": 194,
-  "num_calls": 19,
-  "num_branches": 14,
-  "num_stores": 45,
-  "num_loads": 52,
-  "num_phi": 1
-}

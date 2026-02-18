@@ -39,10 +39,8 @@ env/
 *.sqlite3
 
 # Benchmarks / generated data
-benchmarks/out/
-results/
 *.log
-*.csv
+
 
 # Env
 .env
@@ -52,5 +50,5 @@ results/
 .DS_Store
 Thumbs.db
 
-# Unecessary folders (for now)
+# Folders
 insights/

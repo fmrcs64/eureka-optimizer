@@ -1,9 +1,9 @@
 use std::collections::HashMap;
 use inkwell::module::Module;
-use inkwell::llvm_sys::core::{LLVMGetNumSuccessors, LLVMGetSuccessor};
+use inkwell::llvm_sys::core::{LLVMGetNumSuccessors, LLVMGetSuccessor, LLVMGetInstructionOpcode};
 use inkwell::values::InstructionOpcode;
 use inkwell::values::AsValueRef;
-use crate::ir::ffi; 
+use crate::ir::ffi;
 
 pub struct IRGraph {
     pub nodes: Vec<Node>,
@@ -30,8 +30,9 @@ pub enum Node {
     },
     Instruction {
         opcode: InstructionOpcode,
+        raw_opcode_id: u32,                        
         operand_count: usize,
-        cost: u32,
+        cost: f32, 
     },
 }
 
@@ -64,13 +65,13 @@ impl Node {
                     ],
                 }
             }
-            Node::Instruction { opcode, operand_count, cost } => {
+            Node::Instruction { opcode, raw_opcode_id, operand_count, cost } => {
                 #[cfg(debug_assertions)]
                 println!("Extracted features for Instruction: opcode={:?}, operand_count={}", opcode, operand_count);
                 FeatureVector {
                     values: vec![
-                        *cost as u32 as f32,
-                        *opcode as u32 as f32,
+                        *cost,                 
+                        *raw_opcode_id as f32,
                         *operand_count as f32,
                     ]
                 }
@@ -78,7 +79,6 @@ impl Node {
         }
     }
 }
- // TODO: Modify IRGraph struct fields public for main.rs use
 impl IRGraph {
     pub fn from_module(module: &Module<'_>) -> Self {
         let mut graph = IRGraph {
@@ -128,8 +128,12 @@ impl IRGraph {
             for (block, &block_idx) in blocks.iter().zip(block_indices.iter()) {
                 for instruction in block.get_instructions() {
                     let inst_idx = graph.nodes.len();
+                    let raw_opcode_id = unsafe {
+                        LLVMGetInstructionOpcode(instruction.as_value_ref()) as u32
+                    };
                     graph.nodes.push(Node::Instruction {
                         opcode: instruction.get_opcode(),
+                        raw_opcode_id,
                         operand_count: instruction.get_num_operands() as usize,
                         cost: ffi::instruction_cost(instruction),
                     });

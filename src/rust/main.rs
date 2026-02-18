@@ -1,5 +1,7 @@
 use clap::Parser;
 use inkwell::context::Context;
+use std::fs::{self, File};
+use std::io::BufWriter;
 
 mod ir;
 
@@ -25,9 +27,13 @@ fn main() -> anyhow::Result<()> {
     
     for (id, node) in graph.nodes.iter().enumerate() {
     let features = node.extract_features(&graph, id);
-    println!("Node {}: features = {:?}", id, features.values);
+   // println!("Node {}: features = {:?}", id, features.values);
 }
-    // TODO: schema.rs — serializar para JSON
-
+    let schema = ir::schema::IRSchema::from_graph(&graph);
+    fs::create_dir_all("output")?;
+    let output = File::create("output/ir_features.json")?;
+    let mut writer = BufWriter::new(output);
+    serde_json::to_writer_pretty(&mut writer, &schema).unwrap();
+    println!("IR features extracted and saved raw JSON to output/ir_features.json");
     Ok(())
 }
