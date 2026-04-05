@@ -29,12 +29,19 @@ fn main() {
     build
         .cpp(true)
         .file("src/cpp/tti_wrapper.cpp")
-        .flag("-std=c++17");
-
+        .include("src/cpp/include");
+        if cfg!(target_env = "msvc") {
+            build.flag("/std:c++17");
+        }
+        if cfg!(not(target_env = "msvc")) {
+            build.flag("-std=c++17");
+        }   
+        
     for flag in cxxflags.split_whitespace() {
+     if !flag.starts_with("-std") && !flag.starts_with("/std") {
         build.flag(flag);
     }
-
+    }
     build.compile("tti_wrapper");
 
     for flag in ldflags.split_whitespace() {

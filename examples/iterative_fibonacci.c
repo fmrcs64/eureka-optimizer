@@ -1,6 +1,5 @@
 #include <stdio.h>
 
-// Fibonacci iterativo (RÁPIDO)
 int fibonacci(int n) { 
     if (n <= 1) return n;
     int a = 0, b = 1, c;
@@ -15,9 +14,8 @@ int fibonacci(int n) {
 int main() {
     int result = 0;
     
-    // Loop que força trabalho real
-    for (int i = 0; i < 1000000; i++) {  // Ajuste esse número
-        result += fibonacci(i % 30); // Limitar para evitar overflow
+    for (int i = 0; i < 1000000; i++) { 
+        result += fibonacci(i % 30); 
     }
     
     printf("Result: %d\n", result);

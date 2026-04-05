@@ -1,10 +1,10 @@
 use anyhow::Result;
 use std::path::Path;
-use inkwell::context::Context;
+use inkwell::context::ContextRef;
 use inkwell::module::Module;
 use inkwell::memory_buffer::MemoryBuffer;
 
-pub fn load_module<'ctx>(path: &str, context: &'ctx Context) -> Result<Module<'ctx>> {
+pub fn load_module<'ctx>(path: &str, context: &'ctx ContextRef) -> Result<Module<'ctx>> {
     let path = Path::new(path);
     if !path.exists() {
         anyhow::bail!("IR file not found: {}", path.display());

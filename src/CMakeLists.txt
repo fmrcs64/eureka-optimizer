@@ -1,0 +1,17 @@
+cmake_minimum_required(VERSION 3.20)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
+
+find_package(VTune QUIET)
+if(VTUNE_FOUND)
+    message(STATUS "VTune support enabled: ${VTune_INCLUDE_DIRS}")
+    target_compile_definitions(profiling_runtime PUBLIC HAVE_VTUNE)
+    target_include_directories(profiling_runtime PUBLIC ${VTune_INCLUDE_DIRS})
+    target_link_libraries(profiling_runtime PUBLIC ${VTUNE_JITPROFILING_LIB})
+
+    if(LLVM_USE_INTEL_JITEVENTS)
+        add_definitions(-DLLVM_USE_INTEL_JITEVENTS)
+        list(APPEND LLVMOPTIONALCOMPONENTS IntelJITEvents)
+    endif()
+else()
+    message(STATUS "VTune not found")
+endif()

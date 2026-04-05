@@ -52,3 +52,11 @@ Thumbs.db
 
 # Folders
 insights/
+.VSCodeCounter/
+
+# Files
+problems.txt
+project_structure.text
+
+# Large IR
+benchmarks/output.ll

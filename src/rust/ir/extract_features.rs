@@ -44,15 +44,15 @@ impl Node {
     pub fn extract_features(&self, _graph: &IRGraph, _node_id: usize) -> FeatureVector {
         match self {
             Node::Function { arguments } => {
-                #[cfg(debug_assertions)]
-                println!("Extracted features for Function: arguments={:?}", arguments);
+                //#[cfg(debug_assertions)]
+               // println!("Extracted features for Function: arguments={:?}", arguments);
                 FeatureVector {
                     values: vec![arguments.len() as f32],
                 }
             }
             Node::BasicBlock { name, pred_blocks, succ_blocks } => {
-                #[cfg(debug_assertions)]
-                println!("Extracted features for BasicBlock: name={}", name);
+                // #[cfg(debug_assertions)]
+               // println!("Extracted features for BasicBlock: name={}", name);
                 let pred_count = pred_blocks.len() as f32;
                 let succ_count = succ_blocks.len() as f32;
                 // values: [pred_count, succ_count, is_entry, is_exit]
@@ -66,11 +66,11 @@ impl Node {
                 }
             }
             Node::Instruction { opcode, raw_opcode_id, operand_count, cost } => {
-                #[cfg(debug_assertions)]
-                println!("Extracted features for Instruction: opcode={:?}, operand_count={}", opcode, operand_count);
+             //   #[cfg(debug_assertions)]
+            //    println!("Extracted features for Instruction: opcode={:?}, operand_count={}, cost={}", opcode, operand_count, cost);
                 FeatureVector {
                     values: vec![
-                        *cost,                 
+                        *cost as f32,                 
                         *raw_opcode_id as f32,
                         *operand_count as f32,
                     ]
@@ -81,6 +81,7 @@ impl Node {
 }
 impl IRGraph {
     pub fn from_module(module: &Module<'_>) -> Self {
+        ffi::run_instrumentation(module);
         let mut graph = IRGraph {
             nodes: Vec::new(),
             edge: Vec::new(),

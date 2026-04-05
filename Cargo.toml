@@ -2,7 +2,6 @@
 name = "eureka-optimizer"
 edition = "2021"
 version = "0.1.0"
-authors = ["Felipe Alves das Mercês <felipemercessesi@gmail.com>"]
 description = "A short description"
 license = "MIT"
 repository = "https://github.com/fmrcs64/eureka-optimizer"
@@ -14,10 +13,10 @@ cargo = { root = "src/rust" }
 
 [dependencies]
 inkwell = { version = "0.8.0", default-features = false, features = ["llvm18-1"] }
-serde = {version = "1.0", features = ["derive"]}
+llvm-sys = { version = "181" }
+serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 clap = { version = "4.0", features = ["derive"] } 
-either = "1.0"
 anyhow = "1.0.100"
 
 [build-dependencies]
