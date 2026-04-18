@@ -80,8 +80,8 @@ extern "C" {
       Module* M = unwrap(mod_ref);
       if(!M) return make_error<StringError>("Module not found", inconvertibleErrorCode()); // Avoid converting to std::error_code()
       //ThreadSafeModule optional, C++/FFI side doesn't cause any lifetime concerns   
-      // auto JIT = orc::LLJITBuilder().create();
-      // if(!JIT) return JIT.takeError();
+      auto JIT = orc::LLJITBuilder().create();
+      if(!JIT) return JIT.takeError();
       
     }
 
