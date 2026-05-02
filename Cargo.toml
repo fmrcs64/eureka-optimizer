@@ -20,7 +20,7 @@ clap = { version = "4.0", features = ["derive"] }
 anyhow = "1.0.100"
 
 [build-dependencies]
-cc = "1.2.56"
+cmake = "0.1.58"   
 
 [[bin]]
 name = "main"

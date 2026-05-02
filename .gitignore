@@ -58,5 +58,6 @@ insights/
 problems.txt
 project_structure.text
 
-# Large IR
-benchmarks/output.ll
+# IR
+benchmarks/*
+!benchmarks/benchmark-O0.ll

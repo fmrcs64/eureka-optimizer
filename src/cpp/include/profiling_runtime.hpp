@@ -3,7 +3,6 @@
 
 #include <cstdint>
 #include <atomic>
-
 struct ProbeProfile {
    std::atomic<uint64_t> exec_count{0};
    std::atomic<uint64_t> total_cycles{0};
@@ -18,11 +17,19 @@ struct ProbeProfile {
 #if defined(HAVE_VTUNE)
 #include "llvm/ExecutionEngine/JITEventListener.h"
 #include "llvm/ExecutionEngine/Orc/LLJIT.h"
-void register_vtune_listener(llvm::orc::LLJIT *JIT) {
+#include "llvm/ExecutionEngine/Orc/RTDyldObjectLinkingLayer.h"
+
+inline void register_vtune_listener(llvm::orc::LLJIT *JIT) {
     auto *listener = llvm::JITEventListener::createIntelJITEventListener();
-    if (listener)
-        JIT->registerJITEventListener(*listener);
+    if (!listener) return;
+
+    auto *objLayer = llvm::dyn_cast<llvm::orc::RTDyldObjectLinkingLayer>(
+        &JIT->getObjLinkingLayer()
+    );
+    if (objLayer)
+        objLayer->registerJITEventListener(*listener);
 }
+#endif
 #endif
 
 #include <intrin.h>
@@ -62,7 +69,6 @@ void register_vtune_listener(llvm::orc::LLJIT *JIT) {
     #else
         #error "Unsupported compiler/architecture for x86 cycle counter"
     #endif 
-    #endif
 
 // #undef __linux__
 #if defined(__linux__)

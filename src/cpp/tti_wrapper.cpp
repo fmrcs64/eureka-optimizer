@@ -2,16 +2,16 @@
 #include "llvm/IR/Function.h"
 #include "llvm/IR/PassManager.h"
 #include "llvm/MC/TargetRegistry.h"
-#include "llvm/Passes/PassBuilder.h"
 #include "llvm/Support/TargetSelect.h"
 #include "llvm/Target/TargetMachine.h"
 #include "llvm/TargetParser/Host.h"
 #include "llvm/TargetParser/SubtargetFeature.h"
+#include "llvm/Passes/PassBuilder.h"
 #include "llvm/Transforms/IPO/SampleProfileProbe.h"
 #include "llvm/ExecutionEngine/Orc/LLJIT.h"
 #include "llvm/ExecutionEngine/Orc/ObjectLinkingLayer.h"
 
-#include "include/profiling_runtime.hpp"
+#include "include\profiling_runtime.hpp"
 
 #include <fstream>
 #include <memory>
@@ -84,8 +84,6 @@ extern "C" {
       if(!JIT) return JIT.takeError();
       
     }
-
-
     int get_instruction_cost(LLVMValueRef instr_ref) {
         Instruction* I = unwrap<Instruction>(instr_ref);
         if (!I) return -1;
